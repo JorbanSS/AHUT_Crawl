@@ -11,3 +11,27 @@ AHUT OJ 附属爬虫项目
 ## 技术架构
 
 Py3.12 \ FastAPI \ scrapy
+
+## 配置环境
+
+```sh
+pip install scrapy
+
+scrapy startproject crawl
+```
+
+## 启动项目
+
+```sh
+uvicorn main:app --reload
+```
+
+运行在 http://127.0.0.1:8000
+
+OpenAPI 标准的交互式 API 文档
+
+- Swagger UI http://127.0.0.1:8000/docs
+
+- Redoc http://127.0.0.1:8000/redoc
+
+
