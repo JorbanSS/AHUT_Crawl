@@ -15,9 +15,10 @@ class ContestsPipeline:
             charset=config.MYSQL_CHARSET
         )
         self.cursor = self.conn.cursor()
+        self.contests = []
 
     def close_spider(self, spider):
-        self.conn.commit()
+        self._write_to_mysql()
         self.cursor.close()
         self.conn.close()
 
@@ -28,9 +29,16 @@ class ContestsPipeline:
         duration = item.get('duration', 0)
         start_time = item.get('start_time', 0)
         oj = item.get('oj', '')
-        self.cursor.execute(
-            'INSERT INTO recentcontests(RCID, Title, Type, Duration, StartTime, OJ) VALUES (%s, %s, %s, %s, %s, %s)',
-            (rcid, title, contest_type, duration, start_time, oj)
-        )
-        print('输出', (rcid, title, contest_type, duration, start_time, oj))
+        if start_time < 1e11:
+            start_time *= 1000
+        self.contests.append((rcid, title, contest_type, duration, start_time, oj))
+        print('输出12121212121', (rcid, title, contest_type, duration, start_time, oj))
         return item
+
+    def _write_to_mysql(self):
+        self.cursor.executemany(
+            'INSERT INTO recentcontests(RCID, Title, Type, Duration, StartTime, OJ) '
+            'VALUES (%s, %s, %s, %s, %s, %s)',
+            self.contests
+        )
+        self.conn.commit()
