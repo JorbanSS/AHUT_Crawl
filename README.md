@@ -15,9 +15,25 @@ Py3.12 \ FastAPI \ scrapy
 ## 配置环境
 
 ```sh
+pip freeze > requirements.txt  # 导出依赖项清单
+
+pip install -r requirements.txt  # 安装所有依赖项
+```
+
+安装 scrapy
+
+```sh
 pip install scrapy
 
-scrapy startproject crawl
+scrapy startproject crawl  # 创建项目
+
+scrapy genspider itcast itcast.cn  # 创建新的蜘蛛
+```
+
+安装第三方库
+
+```sh
+pip install pymysql
 ```
 
 ## 启动项目
@@ -34,4 +50,8 @@ OpenAPI 标准的交互式 API 文档
 
 - Redoc http://127.0.0.1:8000/redoc
 
+运行爬虫
 
+```sh
+scrapy crawl codeforces -a opt=contests --nolog
+```

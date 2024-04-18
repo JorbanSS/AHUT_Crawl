@@ -1,0 +1,7 @@
+# mysql
+MYSQL_HOST = 'localhost'
+MYSQL_PORT = 3306
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '120101+zdy'
+MYSQL_DATABASE = 'ahutoj'
+MYSQL_CHARSET = 'utf8'
