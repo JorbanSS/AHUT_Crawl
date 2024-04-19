@@ -1,44 +1,39 @@
-# 通过 CrawlerRunner 运行多个爬虫
-from scrapy.crawler import CrawlerRunner
-from scrapy.utils.log import configure_logging
-from twisted.internet import reactor
+import os
 
 from db import create
-from crawl.spiders.codeforces import CodeforcesSpider
-from crawl.spiders.nowcoder import NowcoderSpider
+
+
+def run_luogu(opt: str = 'contests'):
+    command = f'scrapy crawl luogu -a opt={opt} --nolog'
+    os.system(command)
+
+
+def run_nowcoder(opt: str = 'contests'):
+    command = f'scrapy crawl nowcoder -a opt={opt} --nolog'
+    os.system(command)
+
+
+def run_codeforces(opt: str = 'contests'):
+    command = f'scrapy crawl codeforces -a opt={opt} --nolog'
+    os.system(command)
+
+
+def run_atcoder(opt: str = 'contests'):
+    command = f'scrapy crawl atcoder -a opt={opt} --nolog'
+    os.system(command)
 
 
 def get_contests():
-    create.create_database()
-    opt = 'contests'
-    configure_logging()
-    runner = CrawlerRunner()
-    runner.crawl(NowcoderSpider, opt=opt)
-    # runner.crawl(CodeforcesSpider, opt=opt)
-    d = runner.join()
-    d.addBoth(lambda _: reactor.stop())
-    reactor.run()
+    run_luogu()
+    run_nowcoder()
+    run_codeforces()
+    run_atcoder()
 
 
 def main():
+    create.create_database()
     get_contests()
 
 
 if __name__ == '__main__':
     main()
-
-
-# def getNowcoderContests():
-#     opt = 'contests'
-#     command = f'scrapy crawl nowcoder -a opt={opt}'
-#     cmdline.execute(command.split())
-#
-# def getCodeforcesContests():
-#     opt = 'contests'
-#     command = f'scrapy crawl codeforces -a opt={opt}'
-#     cmdline.execute(command.split())
-#
-# def getContests():
-#     create.create_database()
-#     getCodeforcesContests()
-#     getNowcoderContests()

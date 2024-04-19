@@ -41,11 +41,12 @@ DROP TABLE IF EXISTS `recentcontests`;
 
 CREATE TABLE IF NOT EXISTS `recentcontests`
 (
-    `RCID`                VARCHAR(20) COMMENT '近期比赛 ID',
+    `CID`                VARCHAR(20) COMMENT '比赛 ID',
     `Title`               VARCHAR(100) COMMENT '比赛名称',
     `Type`                VARCHAR(10) COMMENT '赛制',
-    `Duration`            INT COMMENT '持续时间',
     `StartTime`           LONG COMMENT '开始时间',
+    `Duration`            INT COMMENT '持续时间',
     `OJ`                  VARCHAR(10) COMMENT '平台',
-    PRIMARY KEY(`RCID`)
+    `URL`                 VARCHAR(100) COMMENT '比赛链接',
+    PRIMARY KEY(`CID`)
 ) DEFAULT CHARSET = 'utf8mb4';

@@ -28,15 +28,16 @@ class CodeforcesSpider(Spider):
     def parse_contests(self, response):
         contests = response.json()['result']
         for contest in contests:
-            print(contest)
             if contest['phase'] != 'FINISHED':
+                cid = str(contest['id'])
                 contest_item = ContestItem(
-                    rcid='cf' + str(contest['id']),
+                    cid='cf' + cid,
                     title=contest['name'],
                     type=contest['type'],
-                    duration=contest['durationSeconds'],
-                    start_time=contest['startTimeSeconds'],
+                    duration=contest['durationSeconds'] * 1000,
+                    start_time=contest['startTimeSeconds'] * 1000,
                     oj='Codeforces',
+                    url='https://codeforces.com/contest/' + cid
                 )
                 yield contest_item
             else:

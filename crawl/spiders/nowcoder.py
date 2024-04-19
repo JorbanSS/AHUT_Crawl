@@ -33,16 +33,17 @@ class NowcoderSpider(Spider):
         contests_list = response.xpath('/html/body/div[1]/div[3]/div[1]/div[2]')
         contests_list = contests_list.css('div.platform-item.js-item')
         for contest in contests_list:
-            print(contest)
             encoded_data = contest.attrib['data-json']
             decoded_data = encoded_data.replace('&quot;', '"')
             contest = json.loads(decoded_data)
+            cid = str(str(contest['contestId']))
             contest_item = ContestItem(
-                rcid='nc' + str(contest['contestId']),
+                cid='nc' + cid,
                 title=contest['contestName'],
                 type=NOWCODER_CONTEST_TYPE[contest['type']],
                 start_time=contest['contestStartTime'],
                 duration=contest['contestDuration'],
                 oj='Nowcoder',
+                url='https://ac.nowcoder.com/acm/contest/' + cid
             )
             yield contest_item

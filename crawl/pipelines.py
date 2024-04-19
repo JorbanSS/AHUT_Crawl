@@ -23,22 +23,20 @@ class ContestsPipeline:
         self.conn.close()
 
     def process_item(self, item, spider):
-        rcid = item.get('rcid', '')
+        cid = item.get('cid', '')
         title = item.get('title', '')
         contest_type = item.get('type', '')
         duration = item.get('duration', 0)
         start_time = item.get('start_time', 0)
         oj = item.get('oj', '')
-        if start_time < 1e11:
-            start_time *= 1000
-        self.contests.append((rcid, title, contest_type, duration, start_time, oj))
-        print('输出12121212121', (rcid, title, contest_type, duration, start_time, oj))
+        url = item.get('url', '')
+        self.contests.append((cid, title, contest_type, duration, start_time, oj, url))
         return item
 
     def _write_to_mysql(self):
         self.cursor.executemany(
-            'INSERT INTO recentcontests(RCID, Title, Type, Duration, StartTime, OJ) '
-            'VALUES (%s, %s, %s, %s, %s, %s)',
+            'INSERT INTO recentcontests(CID, Title, Type, Duration, StartTime, OJ, URL) '
+            'VALUES (%s, %s, %s, %s, %s, %s, %s)',
             self.contests
         )
         self.conn.commit()
