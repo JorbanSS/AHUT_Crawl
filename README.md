@@ -34,6 +34,8 @@ scrapy genspider itcast itcast.cn  # 创建新的蜘蛛
 
 ```sh
 pip install pymysql
+
+pip install sqlalchemy
 ```
 
 ## 启动项目

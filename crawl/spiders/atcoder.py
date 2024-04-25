@@ -32,7 +32,6 @@ class LuoguSpider(Spider):
     def parse_contests(self, response):
         contests_list = response.xpath('//*[@id="contest-table-upcoming"]/div/div/table/tbody')
         contests_list = contests_list.xpath('.//tr')
-        print(contests_list)
         for contest in contests_list:
             cid = contest.xpath('.//td[2]/a/@href').get()[10:]
             title = contest.xpath('.//td[2]/a/text()').get()

@@ -1,9 +1,10 @@
 import os
 import logging
-
 import pymysql
 
+from dao.database import engine
 from config import config
+from dao import models
 
 # 获取项目根目录
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +28,7 @@ def create_database():
         sql_queries = file.read()
 
     try:
+        sql_query = 'CREATE DATABASE IF NOT EXISTS `ahutoj`;'
         # 执行查询
         for sql_query in sql_queries.split('\n\n'):
             cursor.execute(sql_query)
@@ -43,6 +45,7 @@ def create_database():
 
 def main():
     create_database()
+    models.Base.metadata.create_all(bind=engine)
 
 
 if __name__ == '__main__':

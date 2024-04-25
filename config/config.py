@@ -2,6 +2,7 @@
 USE_PROXY = False
 PROXY_HTTPS_URL = 'https://127.0.0.1:7890'
 DOWNLOAD_DELAY = False
+SCRAPY_LOG = True
 
 # mysql
 MYSQL_HOST = 'localhost'
