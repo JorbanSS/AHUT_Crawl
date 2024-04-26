@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, status, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from dao import crud, schemas
-from dao.database import SessionLocal, engine
 from dao.database import SessionLocal
 from crawl import main as crawl_main
+
 
 # Dependency
 def get_db():
@@ -21,7 +21,7 @@ router = APIRouter(
 )
 
 
-@router.get('', response_model=schemas.GetRecentContests, summary='获取近期比赛')
+@router.get('', response_model=schemas.RecentContests, summary='获取近期比赛')
 async def get_recent_contests(db: Session = Depends(get_db)):
     recent_contests_orm_obj = crud.get_recent_contests(db)
     db_recent_contests = [schemas.RecentContest.from_orm(contest).dict() for contest in recent_contests_orm_obj]

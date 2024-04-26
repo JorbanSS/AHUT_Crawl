@@ -24,14 +24,10 @@ def create_database():
 
     file_path = os.path.join(PROJECT_ROOT, 'config', 'create_database.sql')
 
-    with open(file_path, 'r', encoding='utf-8') as file:
-        sql_queries = file.read()
-
     try:
         sql_query = 'CREATE DATABASE IF NOT EXISTS `ahutoj`;'
         # 执行查询
-        for sql_query in sql_queries.split('\n\n'):
-            cursor.execute(sql_query)
+        cursor.execute(sql_query)
         # 提交事务
         conn.commit()
     except Exception as err:

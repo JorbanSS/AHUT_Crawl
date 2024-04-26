@@ -30,7 +30,6 @@ def add_user(db: Session, user: schemas.UserCreate):
 
 def bind_user_account(db: Session, rating: models.Rating, user_bind: schemas.UserBind):
     if rating is not None:
-        print(rating.UID, user_bind.CodeforcesID, user_bind.NowcoderID, user_bind.AtcoderID)
         if user_bind.CodeforcesID is not None:
             rating.CodeforcesID = user_bind.CodeforcesID
         if user_bind.NowcoderID is not None:
@@ -51,7 +50,7 @@ def bind_user_account(db: Session, rating: models.Rating, user_bind: schemas.Use
     db.commit()
 
 
-def get_uid_list_by_account(db: Session, account_name: str):
+def get_user_name_list_by_account(db: Session, account_name: str):
     return (
         db.query(getattr(models.Rating, account_name))
         .filter(and_(
@@ -76,3 +75,8 @@ def get_rating_rank(db: Session):
         item.UserName = user_name if user_name is not None else ''
         rating_rank.append(item)
     return rating_rank
+
+
+def clear_rating_rank(db: Session):
+    db.query(models.Rating).delete()
+    db.commit()

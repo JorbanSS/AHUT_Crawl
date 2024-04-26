@@ -5,7 +5,7 @@ import json
 from scrapy import Spider, Request
 from urllib.parse import unquote
 
-from crawl.items import ContestItem
+from crawl.items import ContestItem, AtcoderRatingItem
 
 
 class LuoguSpider(Spider):
@@ -20,12 +20,17 @@ class LuoguSpider(Spider):
 
     def start_requests(self):
         opt = getattr(self, 'opt', None)
+        user_name = getattr(self, 'user_name', None)
         match opt:
             case 'contests':
                 url = "https://atcoder.jp/contests/"
                 yield Request(url=url, callback=self.parse_contests)
             case 'rating':
-                pass
+                if user_name is None:
+                    logging.warning(f'未指定用户名称，无法爬取 {self.name} 用户信息')
+                else:
+                    url = "https://atcoder.jp/users/" + user_name
+                    yield Request(url=url, callback=self.parse_rating)
             case _:
                 logging.warning(f'未找到蜘蛛 {self.name} 的爬取内容可选项 {opt}')
 
@@ -40,7 +45,7 @@ class LuoguSpider(Spider):
             given_format = '%Y-%m-%d %H:%M:%S%z'
             given_time = contest.xpath('.//td[1]/a/time/text()').get()
             start_time = datetime.timestamp(datetime.strptime(given_time, given_format))
-            contest_item = ContestItem(
+            yield ContestItem(
                 cid=cid,
                 title=title,
                 type='ICPC',
@@ -49,4 +54,14 @@ class LuoguSpider(Spider):
                 oj='Atcoder',
                 url='https://atcoder.jp/contests/' + cid
             )
-            yield contest_item
+
+    def parse_rating(self, response):
+        user_info = response.xpath('//*[@id="main-container"]/div[1]/div[3]/table')
+        user_name = getattr(self, 'user_name', None)
+        rating = user_info.xpath('.//tr[2]/td/span[1]/text()').get()
+        max_rating = user_info.xpath('.//tr[3]/td/span[1]/text()').get()
+        yield AtcoderRatingItem(
+            user_name=user_name,
+            rating=rating,
+            max_rating=max_rating
+        )

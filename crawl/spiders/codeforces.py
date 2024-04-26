@@ -13,6 +13,7 @@ class CodeforcesSpider(Spider):
         "REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7",
         'ITEM_PIPLINES': {
             'crawl.pipelines.ContestsPipeline': 300,
+            'crawl.pipelines.RatingPipeline': 310,
         },
     }
 
@@ -24,9 +25,9 @@ class CodeforcesSpider(Spider):
                 yield Request(url=url, callback=self.parse_contests)
             case 'rating':
                 url = "https://codeforces.com/api/user.info"
-                uid_list = getattr(self, 'uid_list', None)
+                user_name_list = getattr(self, 'user_name_list', None)
                 query_params = {
-                    'handles': uid_list,
+                    'handles': user_name_list,
                     'checkHistoricHandles': 'false'
                 }
                 yield FormRequest(url=url, formdata=query_params, method='GET', callback=self.parse_rating)
@@ -52,19 +53,16 @@ class CodeforcesSpider(Spider):
                 else:
                     break
         else:
-            logging.error(f'{self.name} 爬取内容 近期比赛 失败')
-
+            logging.error(f'{self.name} 爬取内容 recent contests 失败')
 
     def parse_rating(self, response):
         user_rating_list = response.json()
-        if user_rating_list['status'] == 'OK':
-            for user_rating in user_rating_list['result']:
-                user_rating_item = CodeforcesRatingItem(
-                    uid=user_rating['handle'],
-                    rating=user_rating['rating'],
-                    max_rating=user_rating['maxRating'],
-                )
-                print(user_rating_item)
-                yield user_rating_item
-        else:
-            logging.error(f'{self.name} 爬取内容 {self.opt} 失败')
+        if user_rating_list['status'] != 'OK':
+            logging.error(f'{self.name} 爬取内容 rating 失败')
+            return
+        for user_rating in user_rating_list['result']:
+            yield CodeforcesRatingItem(
+                user_name=user_rating['handle'],
+                rating=user_rating['rating'],
+                max_rating=user_rating['maxRating'],
+            )

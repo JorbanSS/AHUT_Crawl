@@ -41,7 +41,7 @@ class LuoguSpider(Spider):
             if end_time <= current_time:
                 continue
             cid = str(str(contest['id']))
-            contest_item = ContestItem(
+            yield ContestItem(
                 cid='lg' + cid,
                 title=contest['name'],
                 type=LUOGU_CONTEST_TYPE[contest['ruleType']],
@@ -50,4 +50,3 @@ class LuoguSpider(Spider):
                 oj='Luogu',
                 url='https://www.luogu.com.cn/contest/' + cid
             )
-            yield contest_item

@@ -59,7 +59,8 @@ if config.DOWNLOAD_DELAY:
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "crawl.pipelines.ContestsPipeline": 300,
+    "crawl.pipelines.ContestsPipeline": 300,
+    "crawl.pipelines.RatingPipeline": 310,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

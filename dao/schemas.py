@@ -30,7 +30,7 @@ class RecentContestsBase(BaseResponse):
     Count: int
 
 
-class GetRecentContests(RecentContestsBase):
+class RecentContests(RecentContestsBase):
     class Config:
         orm_mode = True
         from_attributes = True
@@ -66,8 +66,10 @@ class RatingBase(BaseModel):
     CodeforcesMaxRating: int
     NowcoderID: str
     NowcoderRating: int
+    NowcoderMaxRating: int
     AtcoderID: str
     AtcoderRating: int
+    AtcoderMaxRating: int
     class Config:
         orm_mode = True
         from_attributes = True

@@ -32,9 +32,10 @@ class Rating(Base):
     CodeforcesMaxRating = Column(Integer(), comment='Codeforces 最大评分', default=0)
     NowcoderID = Column(String(20), comment='Nowcoder 用户名')
     NowcoderRating = Column(Integer(), comment='Nowcoder 评分', default=0)
+    NowcoderMaxRating = Column(Integer(), comment='Nowcoder 最大评分', default=0)
     AtcoderID = Column(String(20), comment='Atcoder 用户名')
     AtcoderRating = Column(Integer(), comment='Atcoder 评分', default=0)
-    # VirtualJudgeID = Column(String(20), comment='Virtual Judge 用户名')
+    AtcoderMaxRating = Column(Integer(), comment='Atcoder 最大评分', default=0)
 
 
 class RecentContests(Base):

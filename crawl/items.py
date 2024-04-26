@@ -12,9 +12,22 @@ class ContestItem(Item):
 
 
 class RatingItemBase(Item):
-    uid: str = Field()
+    rating: int = Field()
+    max_rating: int = Field()
 
 
 class CodeforcesRatingItem(RatingItemBase):
-    rating: int = Field()
-    max_rating: int = Field()
+    user_name: str = Field()
+
+
+class AtcoderRatingItem(RatingItemBase):
+    user_name: str = Field()
+
+
+class NowcoderRatingItem(RatingItemBase):
+    uid: str = Field()
+
+
+class NowcoderUserItem(Item):
+    uid: str = Field()
+    user_name: str = Field()

@@ -42,6 +42,7 @@ async def bind_user_account(user_bind: schemas.UserBind, db: Session = Depends(g
             'Msg': f'UID 为 {user_bind.UID} 的用户不存在'
         }
     db_rating = crud.get_rating_by_uid(db, user_bind.UID)
+    if db_rating.NowcoderID is not None:
+        db_rating.NowcoderID = crawl_main.get_nowcoder_id(user_bind.NowcoderID)
     crud.bind_user_account(db, db_rating, user_bind)
     return {}
-
