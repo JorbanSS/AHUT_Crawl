@@ -86,7 +86,7 @@ class RatingPipeline:
                 existing_rating.AtcoderRating = rating
                 existing_rating.AtcoderMaxRating = max_rating
         elif spider.name == 'nowcoder':
-            existing_rating = self.session.query(Rating).filter_by(NowcoderID=item.get('uid')).first()
+            existing_rating = self.session.query(Rating).filter_by(NowcoderID=item.get('ncid')).first()
             if existing_rating:
                 existing_rating.NowcoderRating = rating
                 existing_rating.NowcoderMaxRating = max_rating
@@ -104,7 +104,6 @@ class NowcoderUserPipeline:
     def __init__(self):
         self.session = load_session()
         self.count = 0
-        self.users = []
 
     def close_spider(self, spider):
         if self.count != 0:
@@ -121,10 +120,12 @@ class NowcoderUserPipeline:
     def process_item(self, item, spider):
         if isinstance(item, NowcoderUserItem):
             adapter = ItemAdapter(item)
-            new_user = Rating(
-                id=item.get('uid', ''),
-                user_name=item.get('name', ''),
-            )
-            self.users.append(new_user)
+            uid = item.get('uid', '')
+            ncid = item.get('ncid', '')
+            self.count += 1
+            existing_rating = self.session.query(Rating).filter_by(UID=uid).first()
+            if existing_rating:
+                existing_rating.NowcoderID = ncid
+            return item
         else:
             return item

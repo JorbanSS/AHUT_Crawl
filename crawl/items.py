@@ -25,9 +25,9 @@ class AtcoderRatingItem(RatingItemBase):
 
 
 class NowcoderRatingItem(RatingItemBase):
-    uid: str = Field()
+    ncid: str = Field()
 
 
 class NowcoderUserItem(Item):
     uid: str = Field()
-    user_name: str = Field()
+    ncid: str = Field()

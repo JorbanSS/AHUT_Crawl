@@ -34,7 +34,7 @@ async def add_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post('/user/bind', response_model=schemas.BaseResponse, summary='绑定用户账号')
-async def bind_user_account(user_bind: schemas.UserBind, db: Session = Depends(get_db)):
+async def bind_user_account(user_bind: schemas.UserBind, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_uid(db, user_bind.UID)
     if db_user is None:
         return {
@@ -42,7 +42,8 @@ async def bind_user_account(user_bind: schemas.UserBind, db: Session = Depends(g
             'Msg': f'UID 为 {user_bind.UID} 的用户不存在'
         }
     db_rating = crud.get_rating_by_uid(db, user_bind.UID)
-    if db_rating.NowcoderID is not None:
-        db_rating.NowcoderID = crawl_main.get_nowcoder_id(user_bind.NowcoderID)
+    if user_bind.NowcoderID is not None:
+        background_tasks.add_task(crawl_main.get_nowcoder_id, user_name=user_bind.NowcoderID, uid=user_bind.UID)
+        user_bind.NowcoderID = None
     crud.bind_user_account(db, db_rating, user_bind)
     return {}

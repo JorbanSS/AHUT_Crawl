@@ -61,6 +61,7 @@ if config.DOWNLOAD_DELAY:
 ITEM_PIPELINES = {
     "crawl.pipelines.ContestsPipeline": 300,
     "crawl.pipelines.RatingPipeline": 310,
+    "crawl.pipelines.NowcoderUserPipeline": 320,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

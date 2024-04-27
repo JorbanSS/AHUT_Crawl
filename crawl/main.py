@@ -11,10 +11,14 @@ def run_luogu(opt: str = 'contests'):
     os.system(command)
 
 
-def run_nowcoder(opt: str = 'contests', uid: str = ''):
+def run_nowcoder(opt: str = 'contests', user_name: str = '', uid: str = '', ncid: str = ''):
     command = f'scrapy crawl nowcoder -a opt={opt}'
+    if user_name != '':
+        command += f' -a user_name={user_name}'
     if uid != '':
         command += f' -a uid={uid}'
+    if ncid != '':
+        command += f' -a ncid={ncid}'
     if not config.SCRAPY_LOG:
         command += ' --nolog'
     os.system(command)
@@ -46,19 +50,19 @@ def get_recent_contests():
 
 
 def get_codeforces_rating(user_name_list: str):
-    run_codeforces('rating', user_name_list)
+    run_codeforces('rating', user_name_list=user_name_list)
 
 
 def get_atcoder_rating(user_name: str):
-    run_atcoder('rating', user_name)
+    run_atcoder('rating', user_name=user_name)
 
 
-def get_nowcoder_rating(uid: str):
-    run_nowcoder('rating', uid)
+def get_nowcoder_rating(ncid: str):
+    run_nowcoder('rating', ncid=ncid)
 
 
-def get_nowcoder_id(uid: str):
-    run_nowcoder('id', uid)
+def get_nowcoder_id(user_name: str, uid: str):
+    run_nowcoder('ncid', user_name=user_name, uid=uid)
 
 
 def main():

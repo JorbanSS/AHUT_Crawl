@@ -16,7 +16,8 @@ class NowcoderSpider(Spider):
         "REQUEST_FINGERPRINTER_IMPLEMENTATION": "2.7",
         'ITEM_PIPLINES': {
             'crawl.pipelines.ContestsPipeline': 300,
-            'crawl.pipelines.RatingPipeline': 301,
+            'crawl.pipelines.RatingPipeline': 310,
+            'crawl.pipelines.NowcoderUserPipeline': 320,
         },
     }
 
@@ -27,10 +28,10 @@ class NowcoderSpider(Spider):
                 url = "https://ac.nowcoder.com/acm/contest/vip-index"
                 yield Request(url=url, callback=self.parse_contests)
             case 'rating':
-                uid = getattr(self, 'uid', '')
+                ncid = getattr(self, 'ncid', '')
                 url = "https://ac.nowcoder.com/acm/contest/rating-history"
                 query_params = {
-                    'uid': uid,
+                    'uid': ncid,
                 }
                 yield FormRequest(
                     url=url,
@@ -38,7 +39,7 @@ class NowcoderSpider(Spider):
                     formdata=query_params,
                     callback=self.parse_rating
                 )
-            case 'uid':
+            case 'ncid':
                 user_name = getattr(self, 'user_name', '')
                 url = "https://gw-c.nowcoder.com/api/sparta/pc/search"
                 body_json = {
@@ -75,9 +76,9 @@ class NowcoderSpider(Spider):
 
     def parse_rating(self, response):
         rating_history = response.json()
-        uid = getattr(self, 'uid', '')
+        ncid = getattr(self, 'ncid', '')
         if rating_history['code'] != 0 or len(rating_history['data']) == 0:
-            logging.warning(f'Nowcoder 用户 {uid} 不存在，未找到历史数据')
+            logging.warning(f'Nowcoder 用户 {ncid} 不存在，未找到历史数据')
             return
         rating = rating_history['data'][0]['rating']
         max_rating = rating
@@ -86,18 +87,19 @@ class NowcoderSpider(Spider):
             if rating > max_rating:
                 max_rating = rating
         yield NowcoderRatingItem(
-            uid=uid,
+            ncid=ncid,
             rating=rating,
             max_rating=max_rating,
         )
 
     def parse_uid(self, response):
         user_name = getattr(self, 'user_name', '')
+        uid = getattr(self, 'uid', '')
         user_list = response.json()['data']['records']
         for user in user_list:
             if user['nickname'] == user_name:
-                yield NowcoderUserItem(
-                    uid=user['userId'],
-                    user_name=user_name,
+                return NowcoderUserItem(
+                    uid=uid,
+                    ncid=user['userId'],
                 )
         logging.warning(f'Nowcoder 用户 {user_name} 不存在')
