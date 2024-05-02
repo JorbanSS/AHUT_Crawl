@@ -35,5 +35,8 @@ async def get_recent_contests(db: Session = Depends(get_db)):
 @router.put('', response_model=schemas.BaseResponse, summary='拉取近期比赛')
 async def scrape_recent_contests(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     crud.clear_recent_contests(db)
-    background_tasks.add_task(crawl_main.get_recent_contests)
+    background_tasks.add_task(crawl_main.get_codeforces_contests)
+    background_tasks.add_task(crawl_main.get_nowcoder_contests)
+    background_tasks.add_task(crawl_main.get_atcoder_contests)
+    background_tasks.add_task(crawl_main.get_luogu_contests)
     return {}

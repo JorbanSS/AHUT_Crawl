@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from api import recent_contests, admin, rating
+from api import recent_contests, admin, rating, codeforces
 
 description = """
 python3 + FastAPI + scrapy
@@ -41,6 +41,7 @@ app.add_middleware(
 app.include_router(recent_contests.router)
 app.include_router(admin.router)
 app.include_router(rating.router)
+app.include_router(codeforces.router)
 
 
 if __name__ == '__main__':

@@ -19,18 +19,28 @@ class CodeforcesSpider(Spider):
 
     def start_requests(self):
         opt = getattr(self, 'opt', None)
+        base_url = 'https://codeforces.com/api'
         match opt:
             case 'contests':
-                url = "https://codeforces.com/api/contest.list"
+                url = base_url + '/contest.list'
                 yield Request(url=url, callback=self.parse_contests)
             case 'rating':
-                url = "https://codeforces.com/api/user.info"
-                user_name_list = getattr(self, 'user_name_list', None)
+                url = base_url + '/user.info'
+                user_name_list = getattr(self, 'user_name_list', '')
                 query_params = {
                     'handles': user_name_list,
                     'checkHistoricHandles': 'false'
                 }
-                yield FormRequest(url=url, formdata=query_params, method='GET', callback=self.parse_rating)
+                if user_name_list != '':
+                    yield FormRequest(url=url, formdata=query_params, method='GET', callback=self.parse_rating)
+            case 'submissions':
+                url = base_url + '/user.status'
+                user_name = getattr(self, 'user_name', '')
+                query_params = {
+                    'handle': user_name
+                }
+                if user_name != '':
+                    yield FormRequest(url=url, formdata=query_params, method='GET', callback=self.parse_submissions)
             case _:
                 logging.warning(f'未找到蜘蛛 {self.name} 的爬取内容可选项 {opt}')
 
@@ -66,3 +76,7 @@ class CodeforcesSpider(Spider):
                 rating=user_rating['rating'],
                 max_rating=user_rating['maxRating'],
             )
+
+    def parse_submissions(self, response):
+        submissions = response.json()
+        print(submissions)

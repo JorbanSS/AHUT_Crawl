@@ -6,6 +6,7 @@ from dao.database import SessionLocal, engine
 from dao.database import SessionLocal
 from crawl import main as crawl_main
 
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -43,7 +44,11 @@ async def bind_user_account(user_bind: schemas.UserBind, background_tasks: Backg
         }
     db_rating = crud.get_rating_by_uid(db, user_bind.UID)
     if user_bind.NowcoderID is not None:
-        background_tasks.add_task(crawl_main.get_nowcoder_id, user_name=user_bind.NowcoderID, uid=user_bind.UID)
+        kwargs = {
+            'user_name': user_bind.NowcoderID,
+            'uid': user_bind.UID
+        }
+        background_tasks.add_task(crawl_main.get_nowcoder_id, **kwargs)
         user_bind.NowcoderID = None
     crud.bind_user_account(db, db_rating, user_bind)
     return {}

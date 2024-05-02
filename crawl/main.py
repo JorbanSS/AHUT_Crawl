@@ -1,73 +1,94 @@
+import logging
 import os
 
 from dao import create
 from config import config
 
 
-def run_luogu(opt: str = 'contests'):
-    command = f'scrapy crawl luogu -a opt={opt}'
-    if not config.SCRAPY_LOG:
-        command += ' --nolog'
-    os.system(command)
+def run_crawl(crawl_name: str):
+    def inner(func):
+        def wrapper(**kwargs):
+            command = 'scrapy crawl ' + crawl_name
+            for k, v in kwargs.items():
+                command += ' -a' + k + '=' + v
+            if not config.SCRAPY_LOG:
+                command += ' --nolog'
+            func()
+            logging.info(f'Running command: {command}')
+            os.system(command)
+        return wrapper
+    return inner
 
 
-def run_nowcoder(opt: str = 'contests', user_name: str = '', uid: str = '', ncid: str = ''):
-    command = f'scrapy crawl nowcoder -a opt={opt}'
-    if user_name != '':
-        command += f' -a user_name={user_name}'
-    if uid != '':
-        command += f' -a uid={uid}'
-    if ncid != '':
-        command += f' -a ncid={ncid}'
-    if not config.SCRAPY_LOG:
-        command += ' --nolog'
-    os.system(command)
+def with_opt(opt: str):
+    def inner(func):
+        def wrapper(**kwargs):
+            kwargs['opt'] = opt
+            func(**kwargs)
+        return wrapper
+    return inner
 
 
-def run_codeforces(opt: str = 'contests', user_name_list: str = ''):
-    command = f'scrapy crawl codeforces -a opt={opt}'
-    if user_name_list != '':
-        command += f' -a user_name_list={user_name_list}'
-    if not config.SCRAPY_LOG:
-        command += ' --nolog'
-    os.system(command)
+@with_opt('contests')
+@run_crawl('codeforces')
+def get_codeforces_contests(**kwargs):
+    ...
 
 
-def run_atcoder(opt: str = 'contests', user_name: str = ''):
-    command = f'scrapy crawl atcoder -a opt={opt}'
-    if user_name != '':
-        command += f' -a user_name={user_name}'
-    if not config.SCRAPY_LOG:
-        command += ' --nolog'
-    os.system(command)
+@with_opt('contests')
+@run_crawl('nowcoder')
+def get_nowcoder_contests(**kwargs):
+    ...
 
 
-def get_recent_contests():
-    run_luogu()
-    run_atcoder()
-    run_nowcoder()
-    run_codeforces()
+@with_opt('contests')
+@run_crawl('atcoder')
+def get_atcoder_contests(**kwargs):
+    ...
 
 
-def get_codeforces_rating(user_name_list: str):
-    run_codeforces('rating', user_name_list=user_name_list)
+@with_opt('contests')
+@run_crawl('luogu')
+def get_luogu_contests(**kwargs):
+    ...
 
 
-def get_atcoder_rating(user_name: str):
-    run_atcoder('rating', user_name=user_name)
+@with_opt('rating')
+@run_crawl('codeforces')
+def get_codeforces_rating(**kwargs):
+    ...
 
 
-def get_nowcoder_rating(ncid: str):
-    run_nowcoder('rating', ncid=ncid)
+@with_opt('rating')
+@run_crawl('nowcoder')
+def get_nowcoder_rating(**kwargs):
+    ...
 
 
-def get_nowcoder_id(user_name: str, uid: str):
-    run_nowcoder('ncid', user_name=user_name, uid=uid)
+@with_opt('rating')
+@run_crawl('atcoder')
+def get_atcoder_rating(**kwargs):
+    ...
+
+
+@with_opt('ncid')
+@run_crawl('nowcoder')
+def get_nowcoder_id(**kwargs):
+    ...
+
+
+@with_opt('stastics')
+@run_crawl('codeforces')
+def get_codeforces_stastics(**kwargs):
+    ...
 
 
 def main():
     create.create_database()
-    get_recent_contests()
+    get_codeforces_contests()
+    get_nowcoder_contests()
+    get_atcoder_contests()
+    get_luogu_contests()
 
 
 if __name__ == '__main__':

@@ -6,6 +6,7 @@ from dao.database import SessionLocal, engine
 from dao.database import SessionLocal
 from crawl import main as crawl_main
 
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -37,13 +38,16 @@ async def scrape_rating(background_tasks: BackgroundTasks, db: Session = Depends
     db_codeforces_user_list = crud.get_user_name_list_by_account(db, 'CodeforcesID')
     codeforces_user_list = [user.CodeforcesID for user in db_codeforces_user_list]
     codeforces_user_list_str = ';'.join(codeforces_user_list)
-    background_tasks.add_task(crawl_main.get_codeforces_rating, codeforces_user_list_str)
+    kwargs = {'user_name_list': codeforces_user_list_str}
+    background_tasks.add_task(crawl_main.get_codeforces_rating, **kwargs)
 
     db_atcoder_user_list = crud.get_user_name_list_by_account(db, 'AtcoderID')
     for user in db_atcoder_user_list:
-        background_tasks.add_task(crawl_main.get_atcoder_rating, user.AtcoderID)
+        kwargs = {'user_name': user.AtcoderID}
+        background_tasks.add_task(crawl_main.get_atcoder_rating, **kwargs)
 
     db_nowcoder_user_list = crud.get_user_name_list_by_account(db, 'NowcoderID')
     for user in db_nowcoder_user_list:
-        background_tasks.add_task(crawl_main.get_nowcoder_rating, user.NowcoderID)
+        kwargs = {'ncid': user.NowcoderID}
+        background_tasks.add_task(crawl_main.get_nowcoder_rating, **kwargs)
     return {}
