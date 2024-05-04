@@ -5,6 +5,7 @@ from typing import Optional
 class BaseResponse(BaseModel):
     Code: int = 0
     Msg: str = ''
+
     class Config:
         orm_mode = True
 
@@ -43,6 +44,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     UserName: str
     Year: int
+
     class Config:
         orm_mode = True
         from_attributes = True
@@ -52,6 +54,7 @@ class UserBind(UserBase):
     CodeforcesID: Optional[str] = None
     NowcoderID: Optional[str] = None
     AtcoderID: Optional[str] = None
+
     class Config:
         orm_mode = True
         from_attributes = True
@@ -70,6 +73,7 @@ class RatingBase(BaseModel):
     AtcoderID: str
     AtcoderRating: int
     AtcoderMaxRating: int
+
     class Config:
         orm_mode = True
         from_attributes = True
@@ -78,5 +82,35 @@ class RatingBase(BaseModel):
 class RatingRank(BaseResponse):
     RatingRank: list[RatingBase]
     Count: int
+
     class Config:
         orm_mode = True
+
+
+class CodeforcesStatistics(BaseResponse):
+    CodeforcesID: str
+    verdict: dict[str, int]
+    problemIndex: dict[str, int]
+    language: dict[str, int]
+    tags: dict[str, int]
+    rating: dict[str, int]
+    unsolved: str
+    # submissionHeatMap: dict[str, int]
+    teamMates: str
+
+    tried: int
+    solved: int
+    averageAttempts: float
+    firstAttemptPassedCount: int
+
+    virtualParticipationCount: int
+
+    maxUp: int
+    maxDown: int
+    bestRank: int
+    worstRank: int
+    contestCount: int
+
+    class Config:
+        orm_mode = True
+        from_attributes = True

@@ -62,6 +62,7 @@ ITEM_PIPELINES = {
     "crawl.pipelines.ContestsPipeline": 300,
     "crawl.pipelines.RatingPipeline": 310,
     "crawl.pipelines.NowcoderUserPipeline": 320,
+    "crawl.pipelines.CodeforcesStatisticsPipeline": 330,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

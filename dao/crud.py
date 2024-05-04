@@ -13,12 +13,12 @@ def clear_recent_contests(db: Session):
     db.commit()
 
 
-def get_user_by_uid(db: Session, UID: str):
-    return db.query(models.User).filter(models.User.UID == UID).first()
+def get_user_by_uid(db: Session, uid: str):
+    return db.query(models.User).filter(models.User.UID == uid).first()
 
 
-def get_rating_by_uid(db: Session, UID: str):
-    return db.query(models.Rating).filter(models.Rating.UID == UID).first()
+def get_rating_by_uid(db: Session, uid: str):
+    return db.query(models.Rating).filter(models.Rating.UID == uid).first()
 
 
 def add_user(db: Session, user: schemas.UserCreate):
@@ -80,3 +80,7 @@ def get_rating_rank(db: Session):
 def clear_rating_rank(db: Session):
     db.query(models.Rating).delete()
     db.commit()
+
+
+def get_codeforces_statistics(db: Session, user_name: str):
+    return db.query(models.Codeforces).filter(models.Codeforces.CodeforcesID == user_name).first()

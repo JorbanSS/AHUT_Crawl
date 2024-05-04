@@ -77,18 +77,22 @@ def get_nowcoder_id(**kwargs):
     ...
 
 
-@with_opt('stastics')
+@with_opt('submissions')
 @run_crawl('codeforces')
-def get_codeforces_stastics(**kwargs):
+def get_codeforces_submissions(**kwargs):
     ...
 
 
 def main():
-    create.create_database()
-    get_codeforces_contests()
-    get_nowcoder_contests()
-    get_atcoder_contests()
-    get_luogu_contests()
+    # create.create_database()
+    # get_codeforces_contests()
+    # get_nowcoder_contests()
+    # get_atcoder_contests()
+    # get_luogu_contests()
+    kwargs = {
+        'user_name': 'JorbanS'
+    }
+    get_codeforces_submissions(**kwargs)
 
 
 if __name__ == '__main__':

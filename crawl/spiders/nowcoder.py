@@ -93,12 +93,11 @@ class NowcoderSpider(Spider):
 
     def parse_uid(self, response):
         user_name = getattr(self, 'user_name', '')
-        uid = getattr(self, 'uid', '')
         user_list = response.json()['data']['records']
         for user in user_list:
             if user['nickname'] == user_name:
                 return NowcoderUserItem(
-                    uid=uid,
+                    uid=getattr(self, 'uid', ''),
                     ncid=user['userId'],
                 )
         logging.warning(f'Nowcoder 用户 {user_name} 不存在')
