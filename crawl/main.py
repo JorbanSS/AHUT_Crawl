@@ -83,6 +83,12 @@ def get_codeforces_submissions(**kwargs):
     ...
 
 
+@with_opt('user_contests')
+@run_crawl('codeforces')
+def get_codeforces_user_contests(**kwargs):
+    ...
+
+
 def main():
     # create.create_database()
     # get_codeforces_contests()
@@ -93,6 +99,7 @@ def main():
         'user_name': 'JorbanS'
     }
     get_codeforces_submissions(**kwargs)
+    get_codeforces_user_contests(**kwargs)
 
 
 if __name__ == '__main__':

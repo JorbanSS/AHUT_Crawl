@@ -87,17 +87,25 @@ class RatingRank(BaseResponse):
         orm_mode = True
 
 
+class RatingMap(BaseModel):
+    contestID: int
+    contestName: str
+    rating: int
+
+
 class CodeforcesStatistics(BaseResponse):
     CodeforcesID: str
     verdict: dict[str, int]
     problemIndex: dict[str, int]
     language: dict[str, int]
     tags: dict[str, int]
-    rating: dict[str, int]
+    problemRating: dict[str, int]
     unsolved: str
     # submissionHeatMap: dict[str, int]
     teamMates: str
+    rating: dict[int, RatingMap]
 
+    submissionCount: int
     tried: int
     solved: int
     averageAttempts: float

@@ -145,11 +145,12 @@ class CodeforcesStatisticsPipeline:
             self.session.close()
 
     def process_item(self, item, spider):
+        user_name = item.get('user_name', '')
         if isinstance(item,  CodeforcesUserSubmissionItem):
-            statistics = self.session.query(Codeforces).filter_by(CodeforcesID=item.get('user_name', '')).first()
+            statistics = self.session.query(Codeforces).filter_by(CodeforcesID=user_name).first()
             if statistics is None:
                 statistics = Codeforces(
-                    CodeforcesID=item.get('user_name', ''),
+                    CodeforcesID=user_name,
                     maxUp=0,
                     maxDown=0,
                     bestRank=0,
@@ -160,16 +161,11 @@ class CodeforcesStatisticsPipeline:
             statistics.problemIndex = item['index_dict']
             statistics.language = item['language_dict']
             statistics.tags = item['tags_dict']
-            statistics.rating = item['rating_dict']
-
-            # statistics.verdict = json.dumps(item['verdict_dict'], ensure_ascii=False)
-            # statistics.problemIndex = json.dumps(item['index_dict'], ensure_ascii=False)
-            # statistics.language = json.dumps(item['language_dict'], ensure_ascii=False)
-            # statistics.tags = json.dumps(item['tags_dict'], ensure_ascii=False)
-            # statistics.rating = json.dumps(item['rating_dict'], ensure_ascii=False)
+            statistics.problemRating = item['problem_rating_dict']
             # statistics.submissionHeatMap = json.dumps(item['submission_heat_map_dict'], ensure_ascii=False)
             statistics.teamMates = ';'.join(item['teammate_list'])
 
+            statistics.submissionCount = item['submission_count']
             statistics.tried = item['tried']
             statistics.solved = item['solved']
             statistics.averageAttempts = item['average_attempts']
@@ -180,5 +176,33 @@ class CodeforcesStatisticsPipeline:
             self.count += 1
             self.session.merge(statistics)
         elif isinstance(item, CodeforcesUserContestItem):
-            pass
+            statistics = self.session.query(Codeforces).filter_by(CodeforcesID=user_name).first()
+            if statistics is None:
+                statistics = Codeforces(
+                    CodeforcesID=user_name,
+                    teamMates='',
+
+                    submissionCount=0,
+                    tried=0,
+                    solved=0,
+                    averageAttempts=0.00,
+                    firstAttemptPassedCount=0,
+                    unsolved='',
+
+                    virtualParticipationCount=0,
+                )
+            statistics.maxUp = item['max_up']
+            statistics.maxDown = item['max_down']
+            statistics.bestRank = item['best_rank']
+            statistics.worstRank = item['worst_rank']
+            statistics.contestCount = item['contest_count']
+            statistics.rating = {
+                k: {
+                    'contestID': v.contest_id,
+                    'contestName': v.contest_name,
+                    'rating': v.rating,
+                } for k, v in item['rating'].items()
+            }
+            self.count += 1
+            self.session.merge(statistics)
         return item

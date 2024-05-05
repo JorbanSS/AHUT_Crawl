@@ -39,10 +39,11 @@ class CodeforcesUserSubmissionItem(Item):
     index_dict: dict[str, int] = Field()
     language_dict: dict[str, int] = Field()
     tags_dict: dict[str, int] = Field()
-    rating_dict: dict[int, int] = Field()
+    problem_rating_dict: dict[int, int] = Field()
     # submission_heat_map: dict = Field()
     teammate_list: list[str] = Field()
 
+    submission_count: int = Field()
     tried: int = Field()
     solved: int = Field()
     average_attempts: float = Field()
@@ -52,10 +53,22 @@ class CodeforcesUserSubmissionItem(Item):
     virtual_participation_count: int = Field()
 
 
+class RatingMap:
+    contest_id: str = Field()
+    contest_name: str = Field()
+    rating: int = Field()
+
+    def __init__(self, contest_id, contest_name, rating):
+        self.contest_id = contest_id
+        self.contest_name = contest_name
+        self.rating = rating
+
+
 class CodeforcesUserContestItem(Item):
-    uid: str = Field()
+    user_name: str = Field()
     max_up: int = Field()
     max_down: int = Field()
     best_rank: int = Field()
     worst_rank: int = Field()
     contest_count: int = Field()
+    rating: dict[int, RatingMap] = Field()
