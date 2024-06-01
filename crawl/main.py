@@ -89,17 +89,22 @@ def get_codeforces_user_contests(**kwargs):
     ...
 
 
+def get_codeforces_user_statistics(user_name: str):
+    if user_name != '':
+        kwargs = {
+            'user_name': user_name
+        }
+        get_codeforces_submissions(**kwargs)
+        get_codeforces_user_contests(**kwargs)
+
+
 def main():
     # create.create_database()
     # get_codeforces_contests()
     # get_nowcoder_contests()
     # get_atcoder_contests()
     # get_luogu_contests()
-    kwargs = {
-        'user_name': 'JorbanS'
-    }
-    get_codeforces_submissions(**kwargs)
-    get_codeforces_user_contests(**kwargs)
+    ...
 
 
 if __name__ == '__main__':

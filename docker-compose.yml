@@ -1,0 +1,42 @@
+services:
+  oj-crawler:
+    image: oj-crawler:latest
+    container_name: oj-crawler
+    restart: always
+    build:
+      context: .
+      dockerfile: ./oj-crawler.Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - oj-mysql
+    environment:
+      TZ: Asia/Shanghai
+      DB_HOST: oj-mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: 123456
+      DB_NAME: ahutoj
+    networks:
+      - oj_network
+
+  oj-mysql:
+    image: mysql:latest
+    container_name: oj-mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: ahutoj
+    volumes:
+      - oj-mysql-data:/var/lib/mysql
+    ports:
+      - "33069:3306"
+    networks:
+      - oj_network
+
+networks:
+  oj_network:
+    driver: bridge
+
+volumes:
+  oj-mysql-data:

@@ -36,6 +36,8 @@ scrapy genspider itcast itcast.cn  # 创建新的蜘蛛
 pip install pymysql
 
 pip install sqlalchemy
+
+pip install docker-compose
 ```
 
 ## 启动项目
@@ -56,4 +58,45 @@ OpenAPI 标准的交互式 API 文档
 
 ```sh
 scrapy crawl codeforces -a opt=contests --nolog
+```
+
+## 使用 pyproject.toml 管理项目
+
+```sh
+pip install poetry
+
+poetry init
+
+poetry add $(cat requirements.txt)
+
+poetry install
+
+poetry update
+```
+
+## 使用 docker 部署项目
+
+```sh
+docker build -t oj-crawler:latest .
+
+docker run -d --name oj-crawler -p 8000:8000 oj-crawler
+```
+
+```sh
+docker pull mysql:latest
+
+docker run --name oj-mysql -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_DATABASE=ahutoj -p 3306:3306 -d mysql:latest
+```
+
+## 使用 docker compose 部署项目
+
+```sh
+docker-compose up -d
+
+# 重启服务
+docker-compose down
+docker-compose up -d
+
+# 更新镜像
+docker-compose pull
 ```

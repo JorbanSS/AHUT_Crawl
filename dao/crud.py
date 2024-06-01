@@ -84,3 +84,6 @@ def clear_rating_rank(db: Session):
 
 def get_codeforces_statistics(db: Session, user_name: str):
     return db.query(models.Codeforces).filter(models.Codeforces.CodeforcesID == user_name).first()
+
+def get_rating_by_codeforces_user_name(db: Session, user_name: str):
+    return db.query(models.Codeforces).filter(models.Rating.CodeforcesID == user_name).first()
